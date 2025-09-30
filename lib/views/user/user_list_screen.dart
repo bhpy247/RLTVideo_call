@@ -246,7 +246,7 @@ class _UserListScreenState extends State<UserListScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Join Channel'),
+        title: Text('Join Channel(Channel name should be the same for another user to join)'),
         content: TextField(
           controller: channelController,
           decoration: InputDecoration(

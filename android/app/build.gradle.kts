@@ -29,7 +29,7 @@ android {
 
     defaultConfig {
         applicationId = "com.videocall.videocall"
-        minSdk = 21
+        minSdk = flutter.minSdkVersion
         targetSdk = 34
         versionCode = 1
         versionName = "1.0.0"
@@ -74,8 +74,7 @@ android {
                 signingConfigs.getByName("debug")
             }
 
-            buildConfigField("String", "API_BASE_URL", "\"https://api.yourdomain.com\"")
-            buildConfigField("Boolean", "ENABLE_LOGGING", "false")
+
 
             ndk {
                 debugSymbolLevel = "SYMBOL_TABLE"
@@ -87,9 +86,6 @@ android {
             initWith(getByName("release"))
             applicationIdSuffix = ".staging"
             versionNameSuffix = "-staging"
-
-            buildConfigField("String", "API_BASE_URL", "\"https://staging-api.yourdomain.com\"")
-            buildConfigField("Boolean", "ENABLE_LOGGING", "true")
         }
     }
 
