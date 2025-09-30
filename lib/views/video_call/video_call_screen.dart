@@ -48,15 +48,15 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
         );
         Navigator.pop(context);
       }
-      return;
+      // return;
     }
 
-    agoraProvider = AgoraProvider();
-    agoraController = AgoraController(agoraProvider: agoraProvider);
+    // agoraProvider = AgoraProvider();
+    // agoraController = AgoraController(agoraProvider: agoraProvider);
 
     // Initialize Agora SDK
     bool initialized = await agoraController.initializeAgoraSDK();
-
+    print("initialized :$initialized");
     if (initialized) {
       // Start preview
       await agoraController.startPreview();
@@ -65,6 +65,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
       bool joined = await agoraController.joinChannel(
         channelName: widget.channelName,
         uid: widget.uid,
+        // token: "007eJxTYMieX7mli9PvVvDtswKft8883fD+A09+9Y+9Ndtks63Vt6cqMCSapJmlJhsZGhsaGZqYWpokGptaGBinGJgYWJgbmpsZPO6+ndEQyMjAsYKdiZEBAkF8JgYjYwYGAHBhHpk="
       );
 
       if (mounted) {
@@ -79,6 +80,9 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
           const SnackBar(content: Text('Failed to join channel')),
         );
       }
+      print("Channel Name: ${widget.channelName}");
+      print("UID: ${widget.uid}");
+      print("Joined: $joined");
     } else {
       if (mounted) {
         setState(() {
@@ -89,6 +93,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
         );
       }
     }
+
   }
 
   @override
@@ -180,13 +185,19 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
     return Consumer<AgoraProvider>(
       builder: (context, provider, child) {
         final remoteUid = provider.remoteUid.get();
+        final remoteUsers = provider.remoteUsers.get();
+        final isInChannel = provider.isInChannel.get();
+        final localUid = provider.localUid.get();
+
+        // Print every rebuild
+        print("🔄 REBUILD - Local: $localUid, Remote: $remoteUid, InChannel: $isInChannel, RemoteUsers: $remoteUsers");
 
         if (remoteUid == 0) {
           return Container(
             width: double.infinity,
             height: double.infinity,
             color: Colors.black,
-            child: const Center(
+            child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -195,6 +206,20 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
                   Text(
                     'Waiting for others to join...',
                     style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+                  SizedBox(height: 8),
+                  // 🔍 SHOW DEBUG INFO ON SCREEN
+                  Text(
+                    'Channel: ${widget.channelName}',
+                    style: TextStyle(color: Colors.white70, fontSize: 12),
+                  ),
+                  Text(
+                    'My UID: $localUid',
+                    style: TextStyle(color: Colors.white70, fontSize: 12),
+                  ),
+                  Text(
+                    'In Channel: $isInChannel',
+                    style: TextStyle(color: Colors.white70, fontSize: 12),
                   ),
                 ],
               ),
@@ -210,7 +235,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
             controller: VideoViewController.remote(
               rtcEngine: agoraController.engine!,
               canvas: VideoCanvas(uid: remoteUid),
-              connection: RtcConnection(channelId: widget.channelName),
+              connection: RtcConnection(channelId: widget.channelName,localUid: widget.uid),
             ),
           ),
         );

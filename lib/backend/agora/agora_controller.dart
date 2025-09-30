@@ -100,7 +100,7 @@ class AgoraController {
       _agoraProvider.currentChannelName.set(value: channelName, isNotify: true);
 
       await _engine!.joinChannel(
-        token: token ?? "",
+        token: "d4ae3f9467c443ecb5442e0676a835d7",
         channelId: channelName,
         uid: uid,
         options: const ChannelMediaOptions(

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:videocall/backend/authentication/authentication_provider.dart';
+import 'package:videocall/backend/user_list/user_list_provider.dart';
 import 'package:videocall/utils/my_print.dart';
+import 'backend/agora/agora_provider.dart';
 import 'backend/app_theme/app_theme_provider.dart';
 import 'backend/navigation/navigation_controller.dart';
 
@@ -25,6 +27,8 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<AppThemeProvider>(create: (_) => AppThemeProvider(), lazy: false),
         ChangeNotifierProvider<AuthenticationProvider>(create: (_) => AuthenticationProvider(), lazy: false),
+        ChangeNotifierProvider<AgoraProvider>(create: (_) => AgoraProvider(), lazy: false),
+        ChangeNotifierProvider<UserListProvider>(create: (_) => UserListProvider(), lazy: false),
       ],
       child: const MainApp(),
     );

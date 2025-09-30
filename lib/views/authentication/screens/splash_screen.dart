@@ -12,6 +12,7 @@ import 'package:videocall/models/authentication/login_response_model.dart';
 import 'package:videocall/models/user_model/user_list_model.dart';
 import 'package:videocall/utils/extensions.dart';
 import 'package:videocall/utils/my_print.dart';
+import 'package:videocall/views/authentication/screens/login_screen.dart';
 import 'package:videocall/views/user/user_list_screen.dart';
 
 import '../../../backend/navigation/navigation_controller.dart';
@@ -29,72 +30,45 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   late ThemeData themeData;
   late AuthenticationController authenticationController;
   late AuthenticationProvider authenticationProvider;
-
 
   Future<void> checkLogin({required bool isCheckAuthentication}) async {
     await Future.delayed(const Duration(seconds: 3));
     SharedPrefManager prefManager = SharedPrefManager();
 
     if (context.checkMounted() && context.mounted) {
-      bool isLogin = await authenticationController.checkIsLoggedIn();
+      bool isLogin =
+          await prefManager.getBool(SharePreferenceKeys.bearerToken) ?? false;
+      print("uisLogin");
 
       if (isLogin) {
-        String useModelString = await prefManager.getString(SharePreferenceKeys.userIdKey) ?? "";
-        String userId = await prefManager.getString(SharePreferenceKeys.userIdKey) ?? "";
-        String userName = await prefManager.getString(SharePreferenceKeys.userIdKey) ?? "";
-        MyPrint.printOnConsole("useModelString :  $useModelString");
-
-
-
-        if(userId.checkNotEmpty) {
-
-
-          LoginResponseModel userResponseModel = LoginResponseModel(user: User(name: userName, id: userId));
-          AuthenticationProvider provider = context.read<AuthenticationProvider>();
-          provider.userName.set(value: userResponseModel.user?.name ?? "");
-          provider.userId.set(value: userResponseModel.user?.id ?? "");
-          // await authenticationController.getUserModel(userId: userId);
-          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => UserListScreen()));
-
-        } else {
-          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => UserListScreen()));
-          //Todo: Add Navigation For the login screen
-          // NavigationController.navigateToLoginScreen(
-          //   navigationOperationParameters: NavigationOperationParameters(
-          //     context: context,
-          //     navigationType: NavigationType.pushNamedAndRemoveUntil,
-          //   ),
-          // );
-        }
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => UserListScreen(),
+          ),
+        );
       } else {
-        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => UserListScreen()));
-
-        //Todo: Add Navigation For the login screen
-
-        // NavigationController.navigateToLoginScreen(
-        //   navigationOperationParameters: NavigationOperationParameters(
-        //     context: context,
-        //     navigationType: NavigationType.pushNamedAndRemoveUntil,
-        //   ),
-        // );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (BuildContext context) => LoginScreen()),
+        );
       }
     }
   }
-
-
-
-
 
   @override
   void initState() {
     super.initState();
     authenticationProvider = context.read<AuthenticationProvider>();
-    authenticationController = AuthenticationController(authenticationProvider: authenticationProvider);
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp)  {
+    authenticationController = AuthenticationController(
+      authenticationProvider: authenticationProvider,
+    );
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       NavigationController.isFirst = false;
       checkLogin(isCheckAuthentication: !kIsWeb);
     });
@@ -104,7 +78,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   Widget build(BuildContext context) {
     return const Scaffold(
       backgroundColor: Colors.white,
-      body: Center(child: Text("Splash Screen"))
+      body: Center(child: Text("Splash Screen")),
     );
   }
 }

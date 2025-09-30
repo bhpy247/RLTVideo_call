@@ -66,7 +66,7 @@ class AgoraProvider extends CommonProvider {
     isSpeakerEnabled.set(value: true, isNotify: false);
     currentChannelName.set(value: "", isNotify: false);
     localUid.set(value: 0, isNotify: false);
-    remoteUid.set(value: 0, isNotify: false);
+    remoteUid.set(value: 1, isNotify: false);
     remoteUsers.set(value: [], isNotify: isNotify);
   }
 }
